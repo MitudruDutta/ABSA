@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+
+# Claude Code / harness local state
+.claude/
+
+# OS
+.DS_Store
+
+# Model cache / large artifacts (re-downloadable)
+models/
+*.safetensors
+*.bin
+*.pt
