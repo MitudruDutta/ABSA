@@ -49,11 +49,30 @@ a known realism limitation, noted honestly rather than claimed as production dat
 | aspect presence F1 | 79.0% (recall 93%, precision 69% — LLM over-tags) |
 | polarity agreement (co-present) | 91.2% |
 
+## Results (per-aspect sentiment, mean macro-F1)
+
+| split | TF-IDF + LogReg | RoBERTa sentence-pair (weighted loss) |
+|---|---|---|
+| val  | 0.677 | 0.727 |
+| **test (locked)** | **0.661** | **0.718** |
+
+RoBERTa wins 8/9 aspects on val (only `account`, the rarest, loses). Class-weighted
+loss + 5-epoch tuning lifted the weak aspects (security 0.62→0.70, network 0.60→0.74).
+
+RoBERTa overall (pooled) macro-F1 on val = 0.814. The transformer's lift
+concentrates on data-rich aspects (hardware, account, performance, network);
+TF-IDF stays competitive (wins security/software) — expected on clean synthetic
+text, where the transformer's edge would widen on noisier real tickets.
+`bug`/`security` are capped for both by a near-empty `neutral` class.
+
+Note: DeBERTa-v3 was tried first but gave nan loss under mixed precision in this
+transformers version; switched to RoBERTa-base (stable, bf16).
+
 ## Status
 
-Done: data cleaning, taxonomy lock, sampling, LLM labeling (3-class), audit.
-Next: finalize human adjudication → train/val/test split → TF-IDF baseline →
-DeBERTa sentence-pair ABSA → shared-vs-per-queue experiment → FastAPI + Streamlit + Docker.
+Done: cleaning, taxonomy lock, sampling, LLM labeling (2,500 tickets, 3-class),
+80-ticket audit, train/val/test split, TF-IDF baseline, RoBERTa ABSA, test eval.
+Next: shared-vs-per-queue experiment (the novel core) → FastAPI + Streamlit + Docker.
 
 ## Run
 
