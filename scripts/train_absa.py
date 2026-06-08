@@ -111,7 +111,7 @@ def main():
         per_device_eval_batch_size=16,
         gradient_accumulation_steps=2,
         learning_rate=3e-5,
-        num_train_epochs=5,
+        num_train_epochs=3,          # 14k train -> 3 epochs ample (was 5 @ 2.5k)
         warmup_ratio=0.1,
         weight_decay=0.01,
         bf16=True,          # deberta-v3 breaks under fp16 grad-scaler; bf16 is stable on Ampere

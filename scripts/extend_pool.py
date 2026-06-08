@@ -23,9 +23,9 @@ from taxonomy import ASPECTS, QUEUES
 CLEAN = os.path.join(ROOT, "data", "tickets_clean.csv")
 LABELED = os.path.join(ROOT, "data", "labeled_llm.csv")
 
-TARGET_TOTAL = 2500
-PER_ASPECT_FLOOR = 230   # aim ~230 present per aspect across the full pool
-PER_QUEUE_FLOOR = 60
+TARGET_TOTAL = 20000
+PER_ASPECT_FLOOR = 1800   # aim ~1800 present per aspect across the full pool
+PER_QUEUE_FLOOR = 400
 SEED = 23
 
 
