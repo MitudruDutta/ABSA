@@ -1,0 +1,14 @@
+# Streamlit UI — a thin HTTP client (no model, no torch needed).
+# Build:  docker build -f Dockerfile.streamlit -t absa-ui .
+
+FROM python:3.12-slim
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir streamlit requests
+
+COPY app/streamlit_app.py ./app/streamlit_app.py
+
+EXPOSE 8501
+CMD ["streamlit", "run", "app/streamlit_app.py", \
+     "--server.address=0.0.0.0", "--server.port=8501"]

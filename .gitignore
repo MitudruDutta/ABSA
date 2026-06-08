@@ -17,8 +17,12 @@ env/
 # OS
 .DS_Store
 
-# Model cache / large artifacts (re-downloadable)
+# Jupyter
+.ipynb_checkpoints/
+
+# Model cache / large artifacts (re-downloadable / re-trainable)
 models/
 *.safetensors
 *.bin
 *.pt
+*.joblib
