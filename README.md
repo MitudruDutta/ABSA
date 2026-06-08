@@ -47,6 +47,25 @@ transformer; the transformer's edge would widen on noisier real tickets.
 
 ---
 
+## Live demo
+
+The Streamlit interface (a thin client calling the FastAPI backend) shows the routing
+decision, priority, and per-aspect sentiment for any ticket.
+
+A multi-aspect complaint - billing overcharge and an app crash - is correctly split
+into three negative aspects and routed to Billing with high priority:
+
+![Billing and crash example](docs/images/demo-billing.png)
+
+A security breach routes to IT Support (high priority); a how-to question is correctly
+read as neutral (not a complaint) and routed to Product Support (low priority):
+
+| Security breach | Feature question |
+|---|---|
+| ![Security example](docs/images/demo-security.png) | ![Feature example](docs/images/demo-feature.png) |
+
+---
+
 ## Approach
 
 **Label scheme** (`taxonomy.py`, locked): 9 aspects (billing, account, performance,

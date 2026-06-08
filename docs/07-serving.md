@@ -43,6 +43,24 @@ split: one model instance in the API, any number of UI clients.
 The UI shows the routing decision, a priority badge, and per-aspect sentiment chips,
 with a graceful message if the backend is unreachable.
 
+### Examples (live, from the running stack)
+
+Multi-aspect complaint - billing overcharge plus an app crash - split into three
+negative aspects, routed to Billing, high priority:
+
+![Billing example](images/demo-billing.png)
+
+A security breach routes to IT Support; a how-to question is correctly read as a
+neutral inquiry (not a complaint) and routed to Product Support, low priority:
+
+| Security breach | Feature question |
+|---|---|
+| ![Security](images/demo-security.png) | ![Feature](images/demo-feature.png) |
+
+Initial / empty state:
+
+![Empty state](images/demo-empty.png)
+
 ## 7.4 Containerization
 
 | file | purpose |
