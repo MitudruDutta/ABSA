@@ -63,6 +63,22 @@ Per-aspect sentiment, **test mean macro-F1** (held-out, locked):
 RoBERTa overall (pooled) macro-F1 on val = 0.842. The **ensemble** routes each
 aspect to its val-winning model (TF-IDF for bug/hardware, RoBERTa for the other 7).
 
+### Novel experiment — shared model vs per-queue specialists
+
+The project's core question: does **one shared model** match **N per-queue
+specialist models**? Trained one model per queue (10) and compared to the single
+shared model, per-queue mean aspect macro-F1 on test:
+
+| | mean macro-F1 | models to maintain |
+|---|---|---|
+| **Shared (1 model)** | **0.713** | 1 |
+| Per-queue specialists | 0.676 | 10 |
+
+**The shared model wins on 10/10 queues (+0.037), at 1/10th the operational cost.**
+The gap widens on small queues (Sales −0.121, HR −0.074): specialists starve when
+they fragment scarce data, while the shared model transfers cross-aspect signal
+across all queues. Specialization *hurts* here.
+
 Key finding: scaling 2.5k→20k lifted **both** models and shrank the TF-IDF↔RoBERTa
 gap (+0.057 → +0.012) — on clean synthetic text at scale a cheap linear baseline
 nearly matches a fine-tuned transformer; the transformer's edge would widen on
@@ -78,11 +94,29 @@ text, where the transformer's edge would widen on noisier real tickets.
 Note: DeBERTa-v3 was tried first but gave nan loss under mixed precision in this
 transformers version; switched to RoBERTa-base (stable, bf16).
 
+## Serving (`app/`)
+
+- `app/predict.py` — inference core: ticket → per-aspect sentiment + route + priority.
+- `app/api.py` — FastAPI: `POST /predict`, `GET /health`.
+  Run: `uvicorn app.api:app --port 8000`
+- `app/streamlit_app.py` — interactive demo.
+  Run: `streamlit run app/streamlit_app.py`
+- `Dockerfile` — containerized FastAPI service.
+
+Routing: ticket → aspects → route to the queue of the first negative aspect;
+priority = high (≥2 negatives) / medium (1) / low. Example: *"overcharged on my
+invoice and the app keeps crashing"* → billing+bug+software negative →
+**Billing and Payments**, **high** priority.
+
 ## Status
 
-Done: cleaning, taxonomy lock, sampling, LLM labeling (2,500 tickets, 3-class),
-80-ticket audit, train/val/test split, TF-IDF baseline, RoBERTa ABSA, test eval.
-Next: shared-vs-per-queue experiment (the novel core) → FastAPI + Streamlit + Docker.
+Done: cleaning, taxonomy lock, 20k LLM labels (3-class), 80-ticket audit,
+14k/3k/3k split, TF-IDF baseline, RoBERTa ABSA + weighted loss, ensemble (0.740),
+shared-vs-per-queue experiment, FastAPI + Streamlit + Docker.
+
+Possible extensions: break the silver-label ceiling (re-label with a larger LLM),
+drop `bug`/`security` to binary (near-empty neutral class), threshold tuning for
+recall-optimised routing.
 
 ## Run
 
