@@ -8,7 +8,7 @@ sentiment, each ticket is decomposed into **per-aspect sentiment** (e.g.
 per-queue specialist models on 10/10 queues (+0.037 F1) at 1/10th the maintenance** —
 specialization fragments scarce data and loses cross-aspect transfer.
 
-📄 **Full process writeup — every decision and why — in [DOCUMENTATION.md](DOCUMENTATION.md).**
+Full process writeup, phase by phase, in [docs/](docs/README.md) - every decision and why.
 
 ---
 
@@ -70,17 +70,17 @@ to English, deduped. Text is **LLM-synthetic** (a stated realism limitation).
 
 ```
 notebooks/
-  01_data_and_labeling.ipynb       clean → taxonomy → Qwen3-4B labeling → audit
-  02_modeling_and_eval.ipynb       baseline → RoBERTa → metric VERIFICATION
-  03_experiments_and_serving.ipynb ensemble → shared-vs-per-queue → demo
+ 01_data_and_labeling.ipynb clean → taxonomy → Qwen3-4B labeling → audit
+ 02_modeling_and_eval.ipynb baseline → RoBERTa → metric VERIFICATION
+ 03_experiments_and_serving.ipynb ensemble → shared-vs-per-queue → demo
 app/
-  predict.py                       inference core (ticket → aspects → route)
-  api.py                           FastAPI  (POST /predict, GET /health)
-  streamlit_app.py                 UI — calls the API over HTTP
-taxonomy.py                        locked label space (single source of truth)
-data/                              tickets_clean, train/val/test, labels, audit
-models/                            roberta-absa (safetensors) + tfidf/*.joblib  [gitignored]
-datasets/                         raw English source CSVs
+ predict.py inference core (ticket → aspects → route)
+ api.py FastAPI (POST /predict, GET /health)
+ streamlit_app.py UI — calls the API over HTTP
+taxonomy.py locked label space (single source of truth)
+data/ tickets_clean, train/val/test, labels, audit
+models/ roberta-absa (safetensors) + tfidf/*.joblib [gitignored]
+datasets/ raw English source CSVs
 Dockerfile, Dockerfile.streamlit, docker-compose.yml, requirements.txt
 ```
 
@@ -98,7 +98,7 @@ pip install -r requirements.txt
 jupyter lab notebooks/
 
 # serve: FastAPI hosts the model, Streamlit is a thin HTTP client
-docker compose up --build          # API :8000, UI :8501
+docker compose up --build # API :8000, UI :8501
 # or locally:
 uvicorn app.api:app --port 8000
 ABSA_API_URL=http://localhost:8000 streamlit run app/streamlit_app.py
@@ -115,7 +115,7 @@ crashing"* → billing+bug+software negative → **Billing and Payments**, **hig
 - Labels are **LLM silver** (~90% human agreement), not gold.
 - Text is **LLM-synthetic** — cleaner than real tickets.
 - The **`neutral` class** is data-limited (esp. `bug`: ~52 neutral of 4122) and is the
-  model's weakest point — a data ceiling, not a tuning failure.
+ model's weakest point — a data ceiling, not a tuning failure.
 
 Possible extensions: re-label with a larger LLM to break the silver ceiling; drop
 `bug`/`security` to binary; threshold tuning for recall-optimised routing.
