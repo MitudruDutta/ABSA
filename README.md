@@ -51,14 +51,31 @@ a known realism limitation, noted honestly rather than claimed as production dat
 
 ## Results (per-aspect sentiment, mean macro-F1)
 
-Per-aspect sentiment, **test mean macro-F1** (held-out, locked):
+### Headline (RoBERTa, locked TEST set, 3000 tickets × 9 aspects = 27k cells)
+
+Verified with sklearn `classification_report`:
+
+| metric | score | what it measures |
+|---|---|---|
+| **macro-F1 (3-class, pooled)** | **0.843** | standard ABSA headline |
+| weighted-F1 / accuracy | **0.944** | frequency-weighted |
+| aspect **detection** F1 (present vs not) | **0.864** | the routing signal |
+| polarity accuracy (neg vs neu, where present) | **0.986** | sentiment correctness |
+
+Per-class F1: not_present 0.967, negative 0.885, neutral 0.677 (neutral is the
+weakest — tiny training support, often confused with not_present).
+
+### Score progression (mean-of-per-aspect macro-F1 — the strictest slice)
 
 | stage | score |
 |---|---|
 | TF-IDF + LogReg (2.5k) | 0.661 |
 | RoBERTa sentence-pair, weighted (2.5k) | 0.718 |
 | RoBERTa (20k labels) | 0.736 |
-| **Per-aspect ensemble (20k)** | **0.740** |
+| Per-aspect ensemble (20k) | 0.740 |
+
+Note: 0.740 averages the 9 per-aspect macro-F1s (dragged by `bug`=0.587);
+0.843 pools all cells then computes once. Both are valid; pooled is standard.
 
 RoBERTa overall (pooled) macro-F1 on val = 0.842. The **ensemble** routes each
 aspect to its val-winning model (TF-IDF for bug/hardware, RoBERTa for the other 7).
