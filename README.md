@@ -51,13 +51,23 @@ a known realism limitation, noted honestly rather than claimed as production dat
 
 ## Results (per-aspect sentiment, mean macro-F1)
 
-| split | TF-IDF + LogReg | RoBERTa sentence-pair (weighted loss) |
-|---|---|---|
-| val  | 0.677 | 0.727 |
-| **test (locked)** | **0.661** | **0.718** |
+Per-aspect sentiment, **test mean macro-F1** (held-out, locked):
 
-RoBERTa wins 8/9 aspects on val (only `account`, the rarest, loses). Class-weighted
-loss + 5-epoch tuning lifted the weak aspects (security 0.62→0.70, network 0.60→0.74).
+| stage | score |
+|---|---|
+| TF-IDF + LogReg (2.5k) | 0.661 |
+| RoBERTa sentence-pair, weighted (2.5k) | 0.718 |
+| RoBERTa (20k labels) | 0.736 |
+| **Per-aspect ensemble (20k)** | **0.740** |
+
+RoBERTa overall (pooled) macro-F1 on val = 0.842. The **ensemble** routes each
+aspect to its val-winning model (TF-IDF for bug/hardware, RoBERTa for the other 7).
+
+Key finding: scaling 2.5k→20k lifted **both** models and shrank the TF-IDF↔RoBERTa
+gap (+0.057 → +0.012) — on clean synthetic text at scale a cheap linear baseline
+nearly matches a fine-tuned transformer; the transformer's edge would widen on
+noisier/scarcer real tickets. Class-weighted loss rescued the weak aspects
+(every aspect now ≥0.59). `bug` neutral (52/4122) remains the hard floor.
 
 RoBERTa overall (pooled) macro-F1 on val = 0.814. The transformer's lift
 concentrates on data-rich aspects (hardware, account, performance, network);
