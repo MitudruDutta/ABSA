@@ -26,3 +26,6 @@ models/
 *.bin
 *.pt
 *.joblib
+
+# notebook-regenerated output
+data/predictions_test.csv

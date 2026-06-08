@@ -8,6 +8,8 @@ sentiment, each ticket is decomposed into **per-aspect sentiment** (e.g.
 per-queue specialist models on 10/10 queues (+0.037 F1) at 1/10th the maintenance** —
 specialization fragments scarce data and loses cross-aspect transfer.
 
+📄 **Full process writeup — every decision and why — in [DOCUMENTATION.md](DOCUMENTATION.md).**
+
 ---
 
 ## Results (held-out test set, 3000 tickets × 9 aspects = 27k cells)
